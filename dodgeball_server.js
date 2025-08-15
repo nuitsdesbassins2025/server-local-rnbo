@@ -16,6 +16,12 @@ async function initRNBO() {
     const outputNode = context.createGain();
     outputNode.connect(context.destination);
 
+    // Create outStream
+    const mSD = context.mediaStreamDestination();
+    OscillatorNode.connect(mSD);
+
+
+
     // Fetch the exported patcher
     let response, patcher;
     try {
