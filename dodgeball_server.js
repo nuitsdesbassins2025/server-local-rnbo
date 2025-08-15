@@ -1,8 +1,8 @@
 let device, context, x;
 
 
-const RNBO = require("./node_modules/@rnbo/js")
-const WA = require("./node_modules/@rnbo/js")
+const RNBO = require("@rnbo/js")
+const WA = require("web-audio-api")
 
 
 async function initRNBO() {
