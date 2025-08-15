@@ -1,7 +1,9 @@
 let device, context, x;
 
-import * as RNBO from "@rnbo/js";
-import * as WA from "node-web-audio-api"
+
+const RNBO = require("./node_modules/@rnbo/js")
+const WA = require("./node_modules/@rnbo/js")
+
 
 async function initRNBO() {
 
@@ -100,26 +102,6 @@ async function initRNBO() {
     } catch (_) {
         // pas de dependencies.json, ce n’est pas bloquant
     }
-
-    document.body.onclick = () => {
-        if (context.state === "running") return;
-        context.resume();
-        console.log("Audio context resumed");
-    };
-
-    // Bouton utilisateur
-    document.getElementById("play").addEventListener("click", async () => {
-        if (!context || context.state === "suspended") {
-            await context?.resume();
-        }
-
-        if (!device) {
-            await loadRNBO();
-        }
-
-        triggerEvent("bouclier", x, device);
-        console.log("🛡️ Bouclier déclenché");
-    });
 
     // Receive Outport Message for Inport Feedback
     device.messageEvent.subscribe((ev) => {
