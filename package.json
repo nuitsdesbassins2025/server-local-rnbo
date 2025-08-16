@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@jamesb93/rnbo-svelte": "^1.1.1",
+    "@rnbo/js": "^1.4.1",
+    "speaker": "^0.5.5"
+  }
+}

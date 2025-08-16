@@ -1,8 +1,104 @@
+import fs from "fs";
+import Speaker from "speaker";
+import { createDevice, MessageEvent, TimeNow } from "rnbo/js";
+
+const patchExportURL = "export/NuitsBassins_dodgeweb.export.json";
+
+async function init() {
+
+    //0. Chemin
+    const patchExportURL = "export/NuitsBassins_dodgeweb.export.json";
+    const dependenciesURL = "export/dependencies.json"
+
+    //1.1. RNBO - Fetch Patch
+    let response, patcher;
+    response = await fetch(patchExportURL);
+    patcher = await response.json();
+
+    //1.2. RNBO - Fetch the dependencies
+    let dependencies = [];
+    try {
+        const dependenciesResponse = await fetch(dependenciesURL);
+        dependencies = await dependenciesResponse.json();
+
+        // Prepend "export" to any file dependenciies
+        dependencies = dependencies.map(d => d.file ? Object.assign({}, d, { file: "export/" + d.file }) : d);
+    } catch (e) { }
+
+    //1.3. RNBO - Create the device
+    let device;
+    try {
+        device = await createDevice({ context, patcher });
+    } catch (err) {
+        if (typeof guardrails === "function") {
+            guardrails({ error: err });
+        } else {
+            throw err;
+        }
+        return;
+    }
+
+    // 2.1. SPEAKER - Créer la sortie Speaker
+    const speaker = new Speaker({
+        channels: device.numOutputChannels,  // stéréo ou mono selon RNBO
+        bitDepth: 16,
+        sampleRate: device.sampleRate        // doit matcher celui du patch
+    });
+
+    // 2.2. SPEAKER - Fonction de rendu en boucle
+    const FRAMES = 128; // taille de buffer RNBO
+    function process() {
+        const out = device.getOutputData(FRAMES); // Float32Array
+        const pcm = Buffer.alloc(out.length * 2); // 16-bit PCM
+
+        for (let i = 0; i < out.length; i++) {
+            let s = Math.max(-1, Math.min(1, out[i])); // clamp
+            pcm.writeInt16LE(s * 32767, i * 2);
+        }
+
+        speaker.write(pcm);
+        setImmediate(process); // relance boucle
+    }
+
+    process();
+
+    // 4. Trigger
+    const playParam = device.parametersById.get("play");
+    if (playParam) {
+        playParam.value = 1;
+    }
+
+    const inport = device.inport.get("")
+
+    console.log("RNBO + Speaker prêt ✅");
+
+    //5. Stream
+
+}
+
+init();
+
+
+function triggerEvent(type, x = 0.5, device) {
+    if (!["mur", "bouclier"].includes(type)) {
+        return console.warn("Type non reconnu:", type);
+    }
+    const now = RNBO.TimeNow;
+    const pan = Math.max(0, Math.min(1, x)) * 2 - 1;
+    device.scheduleEvent(new RNBO.MessageEvent(now, `pan_${type}`, [pan]));
+    device.scheduleEvent(new RNBO.MessageEvent(now, type, [1]));
+    console.log("🎯 Event envoyé :", `${type}`, `${x}`);
+
+
+
+/*
 let device, context, x;
 
 
-const RNBO = require("@rnbo/js")
-const WA = require("web-audio-api")
+const RNBO = require("@rnbo/js");
+import Interface from './Interface.svelte';
+import Button from './Button.svelte';
+import { loadSamples, createDeviceInstance } from '@jamesb93/rnbo-svelte';
 
 
 async function initRNBO() {
@@ -18,7 +114,7 @@ async function initRNBO() {
 
     // Create outStream
     const mSD = context.mediaStreamDestination();
-    OscillatorNode.connect(mSD);
+    outputNode.connect(mSD);
 
 
 
@@ -147,3 +243,4 @@ function triggerEvent(type, x = 0.5, device) {
 
 // Au chargement
 initRNBO();
+*/
