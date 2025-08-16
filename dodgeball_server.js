@@ -62,23 +62,40 @@ async function init() {
 
     process();
 
-    // 4. Trigger
-    const playParam = device.parametersById.get("play");
-    if (playParam) {
-        playParam.value = 1;
-    }
+    // 4. Créer un serveur Socket.IO (port 3000)
+    const io = new Server(3000, {
+        cors: { origin: "*" } // si tu veux connecter un client web
+    });
 
-    const inport = device.inport.get("")
+    io.on("connection", socket => {
+        console.log("Client connecté :", socket.id);
 
-    console.log("RNBO + Speaker prêt ✅");
+        // Exemple : réception d'événements "coords" { x:0.5, y:0.8 }
+        socket.on("coords", data => {
+            if (typeof data.x === "number") {
+                device.scheduleEvent(new MessageEvent(TimeNow, "xCoord", [data.x]));
+            }
+            if (typeof data.y === "number") {
+                device.scheduleEvent(new MessageEvent(TimeNow, "yCoord", [data.y]));
+            }
+            console.log("Coords reçues et envoyées à RNBO:", data);
+        });
 
-    //5. Stream
+        // Exemple : déclencher la lecture
+        socket.on("play", () => {
+            device.scheduleEvent(new MessageEvent(TimeNow, "play"));
+            console.log("Play déclenché via Socket.IO");
+        });
+    });
+
+    console.log("Serveur Socket.IO en écoute sur ws://localhost:3000");
+
 
 }
 
 init();
 
-
+// ajouter game
 function triggerEvent(type, x = 0.5, device) {
     if (!["mur", "bouclier"].includes(type)) {
         return console.warn("Type non reconnu:", type);
@@ -88,7 +105,7 @@ function triggerEvent(type, x = 0.5, device) {
     device.scheduleEvent(new RNBO.MessageEvent(now, `pan_${type}`, [pan]));
     device.scheduleEvent(new RNBO.MessageEvent(now, type, [1]));
     console.log("🎯 Event envoyé :", `${type}`, `${x}`);
-
+}
 
 
 /*
