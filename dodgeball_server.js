@@ -38,18 +38,6 @@ async function init() {
         }
     }
 
-    /*
-    // --- Function Init Buffers ---
-    async function loadBuffers(device, dependencies, context) {
-        for (const dep of dependencies) {
-            const wav = fs.readFileSync(`${dep.file}`);
-            const audioBuffer = await context.decodeAudioData(wav.buffer);
-            await device.setDataBuffer(dep.id, audioBuffer);
-            console.log(`✅ Buffer chargé: ${dep.id}`);
-        }
-    }
-    */
-
     // --- Init Dependencies ---
     const dependenciesPath = path.join(__dirname, "export", "dependencies.json");
     const mediaDir = path.join(__dirname, "export");
