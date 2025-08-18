@@ -1,7 +1,30 @@
 {
   "dependencies": {
+    "@descript/web-audio-js": "^0.15.3-patched.6",
     "@jamesb93/rnbo-svelte": "^1.1.1",
     "@rnbo/js": "^1.4.1",
-    "speaker": "^0.5.5"
-  }
+    "express": "^5.1.0",
+    "node-web-audio-api": "^1.0.4",
+    "speaker": "^0.5.5",
+    "standardized-audio-context": "^25.3.77",
+    "web-audio-engine": "^0.13.4"
+  },
+  "name": "server-local-rnbo",
+  "version": "1.0.0",
+  "description": "RNBO NodeJS Server",
+  "main": "dodgeball_server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nuitsdesbassins2025/server-local-rnbo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nuitsdesbassins2025/server-local-rnbo/issues"
+  },
+  "homepage": "https://github.com/nuitsdesbassins2025/server-local-rnbo#readme"
 }

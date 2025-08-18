@@ -1,112 +1,113 @@
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import RNBO from "@rnbo/js";
 import Speaker from "speaker";
-import { createDevice, MessageEvent, TimeNow } from "rnbo/js";
+import { AudioContext, OscillatorNode, GainNode } from "node-web-audio-api";
 
-const patchExportURL = "export/NuitsBassins_dodgeweb.export.json";
+
+const { createDevice, MessageEvent, TimeNow } = RNBO;
+
+// --- ESM : équivalent de __dirname ---
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function init() {
+    // --- Chemins ---
+    const patchExportPath = path.join(__dirname, "export/NuitsBassins_dodgeweb.export.json");
+    const dependenciesPath = path.join(__dirname, "export/dependencies.json");
 
-    //0. Chemin
-    const patchExportURL = "export/NuitsBassins_dodgeweb.export.json";
-    const dependenciesURL = "export/dependencies.json"
+    // --- Créer le contexte audio Node ---
+    const context = new AudioContext();
+    const env = new GainNode(context, { gain: 1 });
+    env.connect(context.destination);
 
-    //1.1. RNBO - Fetch Patch
-    let response, patcher;
-    response = await fetch(patchExportURL);
-    patcher = await response.json();
-
-    //1.2. RNBO - Fetch the dependencies
-    let dependencies = [];
-    try {
-        const dependenciesResponse = await fetch(dependenciesURL);
-        dependencies = await dependenciesResponse.json();
-
-        // Prepend "export" to any file dependenciies
-        dependencies = dependencies.map(d => d.file ? Object.assign({}, d, { file: "export/" + d.file }) : d);
-    } catch (e) { }
-
-    //1.3. RNBO - Create the device
-    let device;
-    try {
-        device = await createDevice({ context, patcher });
-    } catch (err) {
-        if (typeof guardrails === "function") {
-            guardrails({ error: err });
-        } else {
-            throw err;
-        }
+    // --- Charger le patch RNBO ---
+    if (!fs.existsSync(patchExportPath)) {
+        console.error("❌ Patch RNBO introuvable :", patchExportPath);
         return;
     }
+    const patcher = JSON.parse(fs.readFileSync(patchExportPath, "utf8"));
+    const device = await createDevice({ context, patcher });
 
-    // 2.1. SPEAKER - Créer la sortie Speaker
-    const speaker = new Speaker({
-        channels: device.numOutputChannels,  // stéréo ou mono selon RNBO
-        bitDepth: 16,
-        sampleRate: device.sampleRate        // doit matcher celui du patch
+    // --- Charger les dépendances (buffers) via HTTP ---
+    let dependencies = [];
+    if (fs.existsSync(dependenciesPath)) {
+        const rawDeps = fs.readFileSync(dependenciesPath, "utf8");
+        const deps = JSON.parse(rawDeps);
+
+        dependencies = deps
+            .map(d => {
+                if (!d.file) return null;
+                const filePath = path.join(mediaDir, d.file);
+                if (!fs.existsSync(filePath)) {
+                    console.warn(`⚠️ Fichier manquant : ${filePath}`);
+                    return null;
+                }
+                // URL HTTP vers le serveur local
+                return { id: d.id, file: `http://localhost:${PORT}/media/${d.file}` };
+            })
+            .filter(Boolean);
+    } else {
+        console.warn("⚠️ dependencies.json introuvable !");
+    }
+
+    // Charger les buffers dans RNBO
+    if (dependencies.length > 0) {
+        const results = await device.loadDataBufferDependencies(dependencies);
+        results.forEach(r =>
+            console.log(r.type === "success"
+                ? `✅ Buffer chargé: ${r.id}`
+                : `❌ Échec buffer: ${r.id} → ${r.error}`)
+        );
+    }
+
+    // --- Démarrer l’audio ---
+    await context.resume();
+    console.log("🎵 AudioContext démarré, RNBO prêt.");
+
+    // --- Exemple : envoyer un message à un inport ---
+    device.scheduleEvent(new MessageEvent(TimeNow, "play", [1]));
+
+    // --- Ecouter les outports RNBO ---
+    device.messageEvent.subscribe(ev => {
+        console.log(`📤 RNBO outport: ${ev.tag} → ${ev.payload}`);
     });
+}
 
-    // 2.2. SPEAKER - Fonction de rendu en boucle
-    const FRAMES = 128; // taille de buffer RNBO
-    function process() {
-        const out = device.getOutputData(FRAMES); // Float32Array
-        const pcm = Buffer.alloc(out.length * 2); // 16-bit PCM
+init().catch(err => console.error("❌ Erreur init RNBO:", err));
 
-        for (let i = 0; i < out.length; i++) {
-            let s = Math.max(-1, Math.min(1, out[i])); // clamp
-            pcm.writeInt16LE(s * 32767, i * 2);
+
+
+/*
+// 4. Créer un serveur Socket.IO (port 3000)
+const io = new Server(3000, {
+    cors: { origin: "*" } // si tu veux connecter un client web
+});
+
+io.on("connection", socket => {
+    console.log("Client connecté :", socket.id);
+
+    // Exemple : réception d'événements "coords" { x:0.5, y:0.8 }
+    socket.on("coords", data => {
+        if (typeof data.x === "number") {
+            device.scheduleEvent(new MessageEvent(TimeNow, "xCoord", [data.x]));
         }
-
-        speaker.write(pcm);
-        setImmediate(process); // relance boucle
-    }
-
-    process();
-
-    // 4. Créer un serveur Socket.IO (port 3000)
-    const io = new Server(3000, {
-        cors: { origin: "*" } // si tu veux connecter un client web
+        if (typeof data.y === "number") {
+            device.scheduleEvent(new MessageEvent(TimeNow, "yCoord", [data.y]));
+        }
+        console.log("Coords reçues et envoyées à RNBO:", data);
     });
 
-    io.on("connection", socket => {
-        console.log("Client connecté :", socket.id);
-
-        // Exemple : réception d'événements "coords" { x:0.5, y:0.8 }
-        socket.on("coords", data => {
-            if (typeof data.x === "number") {
-                device.scheduleEvent(new MessageEvent(TimeNow, "xCoord", [data.x]));
-            }
-            if (typeof data.y === "number") {
-                device.scheduleEvent(new MessageEvent(TimeNow, "yCoord", [data.y]));
-            }
-            console.log("Coords reçues et envoyées à RNBO:", data);
-        });
-
-        // Exemple : déclencher la lecture
-        socket.on("play", () => {
-            device.scheduleEvent(new MessageEvent(TimeNow, "play"));
-            console.log("Play déclenché via Socket.IO");
-        });
+    // Exemple : déclencher la lecture
+    socket.on("play", () => {
+        device.scheduleEvent(new MessageEvent(TimeNow, "play"));
+        console.log("Play déclenché via Socket.IO");
     });
+});
 
-    console.log("Serveur Socket.IO en écoute sur ws://localhost:3000");
-
-
-}
-
-init();
-
-// ajouter game
-function triggerEvent(type, x = 0.5, device) {
-    if (!["mur", "bouclier"].includes(type)) {
-        return console.warn("Type non reconnu:", type);
-    }
-    const now = RNBO.TimeNow;
-    const pan = Math.max(0, Math.min(1, x)) * 2 - 1;
-    device.scheduleEvent(new RNBO.MessageEvent(now, `pan_${type}`, [pan]));
-    device.scheduleEvent(new RNBO.MessageEvent(now, type, [1]));
-    console.log("🎯 Event envoyé :", `${type}`, `${x}`);
-}
-
+console.log("Serveur Socket.IO en écoute sur ws://localhost:3000");
+*/
 
 /*
 let device, context, x;
