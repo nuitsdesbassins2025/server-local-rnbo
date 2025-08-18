@@ -4,6 +4,7 @@
     "@jamesb93/rnbo-svelte": "^1.1.1",
     "@rnbo/js": "^1.4.1",
     "express": "^5.1.0",
+    "generator": "^1.0.1",
     "node-web-audio-api": "^1.0.4",
     "speaker": "^0.5.5",
     "standardized-audio-context": "^25.3.77",
