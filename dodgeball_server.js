@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import RNBO from "@rnbo/js";
 import { AudioContext, AudioBuffer } from "node-web-audio-api";
 const { createDevice, MessageEvent, MIDIEvent, TimeNow } = RNBO;
+import { Server } from "socket.io";
 
 // --- ESM : équivalent de __dirname ---
 const __filename = fileURLToPath(import.meta.url);
@@ -101,18 +102,14 @@ async function init() {
         }
     });
 
+    function sendInport(tag, values) {
+        console.log("✅ Receive from socket : ", $tag, " ", $values);
+        device.scheduleEvent(new MessageEvent(TimeNow, $tag, $values));
+    }
+
     device.messageEvent.subscribe(ev => {
         console.log(`📤 RNBO outport: ${ev.tag} → ${ev.payload}`);
     });
-
-
-    /*
-        // --- Exemple : envoyer un message à un inport ---
-        device.scheduleEvent(new MessageEvent(TimeNow, "bouclier", [1]));
-
-    // --- Ecouter les outports RNBO ---
-
-
 
     // --- Socket.io ---
     const io = new Server(3000, { cors: { origin: "*" } });
@@ -129,7 +126,7 @@ async function init() {
     });
 
     console.log("✅ RNBO + Socket.io serveur prêt !");
- */
+
 
     console.log("🎹 Appuyez 1 pour jouer un son");
     console.log("   Ctrl+C pour quitter");
