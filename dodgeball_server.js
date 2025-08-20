@@ -3,7 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import RNBO from "@rnbo/js";
 import { AudioContext, AudioBuffer } from "node-web-audio-api";
-const { createDevice, MessageEvent, TimeNow } = RNBO;
+const { createDevice, MessageEvent, MIDIEvent, TimeNow } = RNBO;
 
 // --- ESM : équivalent de __dirname ---
 const __filename = fileURLToPath(import.meta.url);
@@ -23,6 +23,7 @@ async function init() {
 
     // --- Init Device ---
     const device = await createDevice({ context, patcher });
+
 
     // --- Function Init WAV ---
     async function loadWav(filePath, bufferId) {
@@ -61,13 +62,76 @@ async function init() {
 
     device.node.connect(context.destination);
 
-    // --- Exemple : envoyer un message à un inport ---
-    device.scheduleEvent(new MessageEvent(TimeNow, "bouclier", [1]));
+    // --- Capture clavier terminal ---
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+    process.stdin.setEncoding("utf8");
 
-    // --- Ecouter les outports RNBO ---
+    const keyToMidi = {
+        a: 60, // C4
+        z: 62, // D4
+        e: 64, // E4
+        r: 65, // F4
+        t: 67, // G4
+        y: 69, // A4
+        u: 71, // B4
+        i: 72  // C5
+    };
+
+    // Listener touches
+    process.stdin.on("data", (key) => {
+        if (key === "\u0003") { // Ctrl+C
+            console.log("👋 Bye");
+            process.exit();
+        }
+
+        if (key === "1") {
+            console.log(`🛡️ Touche "1" → Message bouclier`);
+            device.scheduleEvent(new MessageEvent(TimeNow, "bouclier", [1]));
+            return;
+        }
+
+        if (keyToMidi[key]) {
+            const note = keyToMidi[key];
+            console.log(`🎹 Touche "${key}" → Note ${note}`);
+
+            // Exemple : envoi d’un NoteOn et NoteOff à RNBO
+            device.scheduleEvent(new MIDIEvent(TimeNow, 0, [0x90, note, 100])); // NoteOn
+        }
+    });
+
     device.messageEvent.subscribe(ev => {
         console.log(`📤 RNBO outport: ${ev.tag} → ${ev.payload}`);
     });
+
+
+    /*
+        // --- Exemple : envoyer un message à un inport ---
+        device.scheduleEvent(new MessageEvent(TimeNow, "bouclier", [1]));
+
+    // --- Ecouter les outports RNBO ---
+
+
+
+    // --- Socket.io ---
+    const io = new Server(3000, { cors: { origin: "*" } });
+    io.on("connection", socket => {
+        console.log("⚡ Client connecté:", socket.id);
+
+        socket.on("inport", ({ tag, values }) => {
+            sendInport(tag, values);
+        });
+
+        socket.on("disconnect", () => {
+            console.log("❌ Client déconnecté:", socket.id);
+        });
+    });
+
+    console.log("✅ RNBO + Socket.io serveur prêt !");
+ */
+
+    console.log("🎹 Appuyez 1 pour jouer un son");
+    console.log("   Ctrl+C pour quitter");
 }
 
 init().catch(err => console.error("❌ Erreur init RNBO:", err));

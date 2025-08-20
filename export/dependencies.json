@@ -1,14 +1,14 @@
 [
-    {
-        "id": "bouclier00",
-        "file": "media/boubou01.wav"
-    },
-    {
-        "id": "bouclier01",
-        "file": "media/boubou02.wav"
-    },
-    {
-        "id": "bouclier02",
-        "file": "media/boubou03.wav"
-    }
+  {
+    "id": "bouclier00",
+    "file": "media/boubou01.wav"
+  },
+  {
+    "id": "bouclier01",
+    "file": "media/boubou02.wav"
+  },
+  {
+    "id": "bouclier02",
+    "file": "media/boubou03.wav"
+  }
 ]
