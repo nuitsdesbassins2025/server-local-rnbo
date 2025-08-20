@@ -96,7 +96,8 @@ async function init() {
             console.log(`🎹 Touche "${key}" → Note ${note}`);
 
             // Exemple : envoi d’un NoteOn et NoteOff à RNBO
-            device.scheduleEvent(new MIDIEvent(TimeNow, 0, [0x90, note, 100])); // NoteOn
+            device.scheduleEvent(new MIDIEvent(context.currentTime * 1000, 0, [0x90, note, 100])); // NoteOn
+            device.scheduleEvent(new MIDIEvent(context.currentTime * 1000 + 250, 0, [0x90, note, 0])); // NoteOff
         }
     });
 
