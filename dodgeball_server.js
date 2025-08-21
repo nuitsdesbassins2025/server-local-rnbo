@@ -16,7 +16,7 @@ global.AudioBuffer = AudioBuffer;
 
 async function init() {
     // --- Init Patcher ---
-    const patchExportPath = path.join(__dirname, "export/NuitsBassins_dodgeweb.export.json");
+    const patchExportPath = path.join(__dirname, "export/dodgeball_server.export.json");
     const patcher = JSON.parse(fs.readFileSync(patchExportPath, "utf8"));
 
     // --- Init AudioContext ---
@@ -92,12 +92,25 @@ async function init() {
             return;
         }
 
+        if (key === "2") {
+            console.log(`🛡️ Touche "2" → Message mur`);
+            device.scheduleEvent(new MessageEvent(TimeNow, "mur", [1]));
+            return;
+        }
+
+        if (key === "3") {
+            console.log(`🛡️ Touche "3" → Message Joueur`);
+            device.scheduleEvent(new MessageEvent(TimeNow, "joueur", [1]));
+            return;
+        }
+
         if (keyToMidi[key]) {
             const note = keyToMidi[key];
             console.log(`🎹 Touche "${key}" → Note ${note}`);
 
             // Exemple : envoi d’un NoteOn et NoteOff à RNBO
-            device.scheduleEvent(new MIDIEvent(context.currentTime * 1000, 0, [0x90, note, 100])); // NoteOn
+            device.scheduleEvent(new MIDIEvent(context.currentTime * 1000, 0, [0x90, note, 0])); // NoteOff qui permet de couper un spam de bouton
+            device.scheduleEvent(new MIDIEvent(context.currentTime * 1000, 10, [0x90, note, 100])); // NoteOn
             device.scheduleEvent(new MIDIEvent(context.currentTime * 1000 + 250, 0, [0x90, note, 0])); // NoteOff
         }
     });
