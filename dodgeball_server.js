@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import RNBO from "@rnbo/js";
 import { AudioContext, AudioBuffer } from "node-web-audio-api";
 const { createDevice, MessageEvent, MIDIEvent, TimeNow } = RNBO;
-import { Server } from "socket.io";
+import { io } from "socket.io-client";
 
 // --- ESM : équivalent de __dirname ---
 const __filename = fileURLToPath(import.meta.url);
@@ -125,25 +125,25 @@ async function init() {
     });
 
     // --- Socket.io ---
-    const io = new Server(3000, { cors: { origin: "*" } });
-    io.on("connection", socket => {
-        console.log("⚡ Client connecté:", socket.id);
-
-        socket.on("inport", ({ tag, values }) => {
-            sendInport(tag, values);
-        });
-
-        socket.on("disconnect", () => {
-            console.log("❌ Client déconnecté:", socket.id);
-        });
+    const socket = io("http://localhost:5000", {
+        transports: ["websocket"],
     });
 
-    console.log("✅ RNBO + Socket.io serveur prêt !");
+    socket.on("inport", ({ tag, values }) => {
+        sendInport(tag, values);
+    });
+
+    socket.on("disconnect", () => {
+        console.log("❌ Client déconnecté:", socket.id);
+    });
+};
+
+console.log("✅ RNBO + Socket.io serveur prêt !");
 
 
-    console.log("🎹 Appuyez 1 pour jouer un son");
-    console.log("   Ctrl+C pour quitter");
-}
+console.log("🎹 Appuyez 1 pour jouer un son");
+console.log("   Ctrl+C pour quitter");
+
 
 init().catch(err => console.error("❌ Erreur init RNBO:", err));
 
