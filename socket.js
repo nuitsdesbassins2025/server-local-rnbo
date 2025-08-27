@@ -13,7 +13,7 @@ export function initSocket() {
         const { client_id, action, datas } = data;
         const clientNumber = assignClientNumber(client_id);
 
-        const payload = [
+        let payload = [
             clientNumber,
             action,
             datas.x,
@@ -26,7 +26,7 @@ export function initSocket() {
         ];
 
         if (action === 'dessin_touch') {
-            const payload = [
+            payload = [
                 clientNumber,
                 action === "dessin_touch" ? 1 : 0,
                 datas.x,
@@ -39,7 +39,7 @@ export function initSocket() {
             ];
         } else {
             if (action === 'something') {
-                const payload = [
+                payload = [
                     clientNumber,
                     action === "dessin_touch" ? 1 : 0,
                     datas.x,
