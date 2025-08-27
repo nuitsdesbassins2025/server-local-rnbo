@@ -2,7 +2,7 @@
 // Ici on suppose que `device` est créé ailleurs et importé
 
 import RNBO from "@rnbo/js";
-const { TimeNow } = RNBO;
+const { TimeNow, MessageEvent } = RNBO;
 
 let device = null;
 

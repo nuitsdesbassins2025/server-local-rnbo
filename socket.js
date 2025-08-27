@@ -11,12 +11,11 @@ export function initSocket() {
 
     socket.on("client_action_trigger", (data) => {
         const { client_id, action, datas } = data;
-
         const clientNumber = assignClientNumber(client_id);
 
         const payload = [
             clientNumber,
-            action === "dessin_touch" ? 1 : 0,
+            action,
             datas.x,
             datas.y,
             parseInt(datas.settings.color, 16),
@@ -25,6 +24,35 @@ export function initSocket() {
             datas.first ? 1 : 0,
             datas.last ? 1 : 0,
         ];
+
+        if (action === 'dessin_touch') {
+            const payload = [
+                clientNumber,
+                action === "dessin_touch" ? 1 : 0,
+                datas.x,
+                datas.y,
+                parseInt(datas.settings.color, 16),
+                datas.settings.brushSize,
+                toolToInt(datas.settings.tool),
+                datas.first ? 1 : 0,
+                datas.last ? 1 : 0,
+            ];
+        } else {
+            if (action === 'something') {
+                const payload = [
+                    clientNumber,
+                    action === "dessin_touch" ? 1 : 0,
+                    datas.x,
+                    datas.y,
+                    parseInt(datas.settings.color, 16),
+                    datas.settings.brushSize,
+                    toolToInt(datas.settings.tool),
+                    datas.first ? 1 : 0,
+                    datas.last ? 1 : 0,
+                ];
+            }
+        }
+
 
         console.log("🎛 Payload RNBO:", payload);
         socketToRNBO(payload);
