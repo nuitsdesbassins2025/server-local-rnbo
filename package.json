@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@rnbo/js": "^1.4.1",
+    "better-sqlite3": "^12.2.0",
     "node-web-audio-api": "^1.0.4",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1"

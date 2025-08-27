@@ -3,8 +3,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import RNBO from "@rnbo/js";
 import { AudioContext, AudioBuffer } from "node-web-audio-api";
-const { createDevice, MessageEvent, MIDIEvent, TimeNow } = RNBO;
-import { io } from "socket.io-client";
+const { createDevice, TimeNow, MessageEvent } = RNBO;
+import { initRNBO } from "./rnbo.js";
+import { initSocket } from "./socket.js";
 
 // --- ESM : équivalent de __dirname ---
 const __filename = fileURLToPath(import.meta.url);
@@ -14,7 +15,8 @@ const __dirname = path.dirname(__filename);
 global.AudioContext = AudioContext;
 global.AudioBuffer = AudioBuffer;
 
-async function init() {
+async function loadRNBODevice() {
+
     // --- Init Patcher ---
     const patchExportPath = path.join(__dirname, "export/dodgeball_server.export.json");
     const patcher = JSON.parse(fs.readFileSync(patchExportPath, "utf8"));
@@ -68,18 +70,6 @@ async function init() {
     process.stdin.resume();
     process.stdin.setEncoding("utf8");
 
-    const keyToMidi = {
-        a: 60, // C4
-        z: 62, // D4
-        e: 64, // E4
-        r: 65, // F4
-        t: 67, // G4
-        y: 69, // A4
-        u: 71, // B4
-        i: 72  // C5
-    };
-
-    // Listener touches
     process.stdin.on("data", (key) => {
         if (key === "\u0003") { // Ctrl+C
             console.log("👋 Bye");
@@ -104,46 +94,26 @@ async function init() {
             return;
         }
 
-        if (keyToMidi[key]) {
-            const note = keyToMidi[key];
-            console.log(`🎹 Touche "${key}" → Note ${note}`);
-
-            // Exemple : envoi d’un NoteOn et NoteOff à RNBO
-            device.scheduleEvent(new MIDIEvent(context.currentTime * 1000, 0, [0x90, note, 0])); // NoteOff qui permet de couper un spam de bouton
-            device.scheduleEvent(new MIDIEvent(context.currentTime * 1000, 10, [0x90, note, 100])); // NoteOn
-            device.scheduleEvent(new MIDIEvent(context.currentTime * 1000 + 250, 0, [0x90, note, 0])); // NoteOff
-        }
     });
-
-    function sendInport(tag, values) {
-        console.log("✅ Receive from socket : ", $tag, " ", $values);
-        device.scheduleEvent(new MessageEvent(TimeNow, $tag, $values));
-    }
 
     device.messageEvent.subscribe(ev => {
         console.log(`📤 RNBO outport: ${ev.tag} → ${ev.payload}`);
     });
 
+    return device
+
+}
+// --- Initialisation RNBO ---
+async function main() {
+    // Ici tu charges ton RNBO device
+    const device = await loadRNBODevice();
+    initRNBO(device);
+
     // --- Socket.io ---
-    const socket = io("http://localhost:5000", {
-        transports: ["websocket"],
-    });
+    initSocket();
 
-    socket.on("inport", ({ tag, values }) => {
-        sendInport(tag, values);
-    });
+    console.log("🚀 Application démarrée");
+}
 
-    socket.on("disconnect", () => {
-        console.log("❌ Client déconnecté:", socket.id);
-    });
-};
-
-console.log("✅ RNBO + Socket.io serveur prêt !");
-
-
-console.log("🎹 Appuyez 1 pour jouer un son");
-console.log("   Ctrl+C pour quitter");
-
-
-init().catch(err => console.error("❌ Erreur init RNBO:", err));
+main();
 
