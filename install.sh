@@ -22,6 +22,6 @@ cd server-local-rnbo
 
 npm init -y
 
-npm install @rnbo/js node-web-audio-api
+npm install @rnbo/js node-web-audio-api better-sqlite3 socket.io-client
 
-node dodgeball_server.js
+node app.js
