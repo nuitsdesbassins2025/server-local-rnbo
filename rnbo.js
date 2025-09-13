@@ -10,7 +10,8 @@ export function initRNBO(rnboDevice) {
     device = rnboDevice;
 }
 
-export function socketToRNBO(payload) {
+export function socketToRNBO(type, payload) {
     if (!device) throw new Error("RNBO device non initialisé");
-    device.scheduleEvent(new MessageEvent(TimeNow, "from_socket", payload));
+    device.scheduleEvent(new MessageEvent(TimeNow, type, payload));
+    console.log(type, payload);
 }

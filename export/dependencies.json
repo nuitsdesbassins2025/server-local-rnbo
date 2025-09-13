@@ -1,34 +1,54 @@
 [
     {
-        "id": "bouclierHit",
-        "file": "media/bip1.wav"
+        "id": "ball00",
+        "file": "media/pingpong_pitch_01.wav"
+    },
+    {
+        "id": "ball01",
+        "file": "media/pingpong_pitch_02.wav"
+    },
+    {
+        "id": "ball02",
+        "file": "media/pingpong_pitch_03.wav"
+    },
+    {
+        "id": "ball03",
+        "file": "media/pingpong_pitch_04.wav"
+    },
+    {
+        "id": "ball04",
+        "file": "media/pingpong_pitch_05.wav"
+    },
+    {
+        "id": "ball05",
+        "file": "media/pingpong_pitch_06.wav"
+    },
+    {
+        "id": "ball06",
+        "file": "media/pingpong_pitch_07.wav"
+    },
+    {
+        "id": "ball07",
+        "file": "media/pingpong_pitch_08.wav"
+    },
+    {
+        "id": "ball08",
+        "file": "media/pingpong_pitch_09.wav"
     },
     {
         "id": "joueur",
-        "file": "media/destroy1.wav"
+        "file": "media/pingpong_006.wav"
     },
     {
-        "id": "mur00",
-        "file": "media/pong1.wav"
+        "id": "bouclierHit",
+        "file": "media/pingpong_004.wav"
     },
     {
-        "id": "mur01",
-        "file": "media/pong2.wav"
+        "id": "wall",
+        "file": "media/bip1.wav"
     },
     {
-        "id": "mur02",
-        "file": "media/pong3.wav"
-    },
-    {
-        "id": "mur03",
-        "file": "media/pong4.wav"
-    },
-    {
-        "id": "mur04",
-        "file": "media/pong5.wav"
-    },
-    {
-        "id": "mur05",
-        "file": "media/pong6.wav"
+        "id": "but",
+        "file": "media/buzzer_bugerror1.wav"
     }
 ]
