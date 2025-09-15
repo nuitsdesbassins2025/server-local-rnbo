@@ -76,24 +76,11 @@ async function loadRNBODevice() {
             process.exit();
         }
 
-        if (key === "1") {
-            console.log(`🛡️ Touche "1" → Message bouclier`);
-            device.scheduleEvent(new MessageEvent(TimeNow, "bouclier", [1]));
+        if (key === "0") {
+            console.log(`🛡️ Touche "0" → Bang Stop All`);
+            device.scheduleEvent(new MessageEvent(TimeNow, "stop", ["bang"]));
             return;
         }
-
-        if (key === "2") {
-            console.log(`🛡️ Touche "2" → Message mur`);
-            device.scheduleEvent(new MessageEvent(TimeNow, "mur", [1]));
-            return;
-        }
-
-        if (key === "3") {
-            console.log(`🛡️ Touche "3" → Message Joueur`);
-            device.scheduleEvent(new MessageEvent(TimeNow, "joueur", [1]));
-            return;
-        }
-
     });
 
     device.messageEvent.subscribe(ev => {
