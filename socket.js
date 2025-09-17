@@ -16,30 +16,38 @@ export function initSocket() {
 
     // --- Mapping des couleurs
     const colorMap = {
-        0xFF0000: "a", // rouge
-        0x00FF00: "b", // vert
-        0x0000FF: "c", // bleu
-        // ...
-        0x27F5D3: "d"  // exemple cyan
+        "#FF0000": "a", // rouge
+        "#00FF00": "b", // vert
+        "#0000FF": "c", // bleu
+        "#FFFF00": "d", // jaune
+        "#FF00FF": "e", // magenta
+        "#00FFFF": "f", // cyan
+        "#FF8000": "g", // orange
+        "#8000FF": "h", // violet
+        "#0080FF": "i", // bleu marine
+        "#FF0080": "j", // rose
+        "#008080": "k", // bleu canard
+        "#FFFFFF": "l", // blanc
     };
 
     // --- Mapping des outils
     const toolMap = {
-        brush: "a",
-        glitter: "b",
-        eraser: "c"
+        pencil: "a",
+        neon: "b",
+        ball: "c",
+        eraser: "d"
     };
 
     socket.on("client_action_trigger", (data) => {
         const { client_id, action, datas } = data;
         const clientNumber = assignClientNumber(client_id);
 
-        const color = parseInt(datas.settings.color, 16); // hex string => int
-        const tool = datas.settings.tool;
+        const color = datas?.settings?.color || null;
+        const tool = datas?.settings?.tool || null;
 
         let payload = [datas.x, datas.y];
 
-        if (action === "dessin_touch") {
+        if (action === "dessin_touch" && color && tool) {
             const colorLetter = colorMap[color];
             const toolLetter = toolMap[tool];
 
@@ -49,6 +57,8 @@ export function initSocket() {
             } else {
                 console.warn("⚠️ Mapping inconnu pour :", datas.settings.color, tool);
             }
+        } else {
+            console.warn("⚠️ Données incomplètes :", datas)
         }
     });
 
@@ -88,9 +98,9 @@ export function initSocket() {
                     console.log("➡️ Collision avec mur :", [1, ...coords, velocity]);
                     socketToRNBO("wall", [1, ...coords, velocity]);
 
-                } else if (collidedWith === "poteau") {
+                } else if (collidedWith === "poteaux") {
                     console.log("➡️ Collision avec poteau");
-                    socketToRNBO("rebond_poteau", [...coords, velocity]);
+                    socketToRNBO("poteaux", [...coords, velocity]);
 
                 } else if (/^\d{4}$/.test(collidedWith)) {
                     console.log("➡️ Collision avec joueur/ID :", [1, ...coords, velocity, Number(collidedWith)]);
@@ -112,13 +122,4 @@ export function initSocket() {
                 break;
         }
     });
-
-    function toolToInt(tool) {
-        switch (tool) {
-            case "brush": return 1;
-            case "glitter": return 2;
-            case "eraser": return 3;
-            default: return 0;
-        }
-    }
 }
