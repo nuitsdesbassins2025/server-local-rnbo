@@ -53,18 +53,18 @@
     },
     {
         "id": "dop_01",
-        "file": "media/DOPAMINE_STEAM_01.wav"
+        "file": "media/DOPAMINE_STEM_01.wav"
     },
     {
-        "id": "dop02",
-        "file": "media/DOPAMINE_STEAM_02.wav"
+        "id": "dop_02",
+        "file": "media/DOPAMINE_STEM_02.wav"
     },
     {
-        "id": "dop03",
-        "file": "media/DOPAMINE_STEAM_03.wav"
+        "id": "dop_03",
+        "file": "media/DOPAMINE_STEM_03.wav"
     },
     {
-        "id": "dop04",
-        "file": "media/DOPAMINE_STEAM_04.wav"
+        "id": "dop_04",
+        "file": "media/DOPAMINE_STEM_04.wav"
     }
 ]

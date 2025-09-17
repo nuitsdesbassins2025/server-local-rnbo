@@ -16,26 +16,26 @@ export function initSocket() {
 
     // --- Mapping des couleurs
     const colorMap = {
-        "#FF0000": "a", // rouge
-        "#00FF00": "b", // vert
-        "#0000FF": "c", // bleu
-        "#FFFF00": "d", // jaune
-        "#FF00FF": "e", // magenta
-        "#00FFFF": "f", // cyan
-        "#FF8000": "g", // orange
-        "#8000FF": "h", // violet
-        "#0080FF": "i", // bleu marine
-        "#FF0080": "j", // rose
-        "#008080": "k", // bleu canard
-        "#FFFFFF": "l", // blanc
+        "#FF0000": 1, // rouge
+        "#00FF00": 2, // vert
+        "#0000FF": 3, // bleu
+        "#FFFF00": 4, // jaune
+        "#FF00FF": 5, // magenta
+        "#00FFFF": 6, // cyan
+        "#FF8000": 7, // orange
+        "#8000FF": 8, // violet
+        "#0080FF": 9, // bleu marine
+        "#FF0080": 10, // rose
+        "#008080": 11, // bleu canard
+        "#FFFFFF": 12, // blanc
     };
 
     // --- Mapping des outils
     const toolMap = {
-        pencil: "a",
-        neon: "b",
-        ball: "c",
-        eraser: "d"
+        pencil: 1,
+        neon: 2,
+        ball: 3,
+        eraser: 4
     };
 
     socket.on("client_action_trigger", (data) => {
