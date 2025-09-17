@@ -42,24 +42,27 @@ export function initSocket() {
         const { client_id, action, datas } = data;
         const clientNumber = assignClientNumber(client_id);
 
-        const color = datas?.settings?.color || null;
-        const tool = datas?.settings?.tool || null;
+        // sécurité : settings peut être undefined
+        const colorHex = datas.settings?.color || "#000000";
+        const toolName = datas.settings?.tool || "unknown";
 
-        let payload = [datas.x, datas.y];
+        const colorCode = colorMap[colorHex] || 0;
+        const toolCode = toolToInt(toolName);
 
-        if (action === "dessin_touch" && color && tool) {
-            const colorLetter = colorMap[color];
-            const toolLetter = toolMap[tool];
+        // coords
+        let x = datas.x;
+        let y = datas.y;
 
-            if (colorLetter && toolLetter) {
-                const type = colorLetter + toolLetter;
-                socketToRNBO(type, payload);
-            } else {
-                console.warn("⚠️ Mapping inconnu pour :", datas.settings.color, tool);
-            }
-        } else {
-            console.warn("⚠️ Données incomplètes :", datas)
+        // si c'est un touch_end → on envoie (0,0)
+        if (action === "touch_end") {
+            x = 0;
+            y = 0;
         }
+
+        const payload = [1, clientNumber, colorCode, toolCode, x, y];
+        console.log("🎨 Payload généré :", payload);
+
+        socketToRNBO(action, payload);
     });
 
     // --- Dodgeball Game ---
@@ -98,9 +101,9 @@ export function initSocket() {
                     console.log("➡️ Collision avec mur :", [1, ...coords, velocity]);
                     socketToRNBO("wall", [1, ...coords, velocity]);
 
-                } else if (collidedWith === "poteaux") {
+                } else if (collidedWith === "poteau") {
                     console.log("➡️ Collision avec poteau");
-                    socketToRNBO("poteaux", [...coords, velocity]);
+                    socketToRNBO("rebond_poteau", [...coords, velocity]);
 
                 } else if (/^\d{4}$/.test(collidedWith)) {
                     console.log("➡️ Collision avec joueur/ID :", [1, ...coords, velocity, Number(collidedWith)]);
@@ -122,4 +125,13 @@ export function initSocket() {
                 break;
         }
     });
+
+    function toolToInt(tool) {
+        switch (tool) {
+            case "brush": return 1;
+            case "glitter": return 2;
+            case "eraser": return 3;
+            default: return 0;
+        }
+    }
 }

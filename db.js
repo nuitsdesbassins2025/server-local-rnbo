@@ -11,7 +11,7 @@ db.prepare(`
 `).run();
 
 let nextNumber = 1;
-const MAX_CLIENTS = 10;
+const MAX_CLIENTS = 20;
 
 export function assignClientNumber(client_id) {
     const existing = db.prepare("SELECT numero FROM client_mapping WHERE client_id = ?").get(client_id);
