@@ -80,15 +80,15 @@ export function initSocket() {
                 socketToRNBO("but", payload);
                 break;
             }
-
-            case "ball_collide": {
-                const { x, y } = event_datas.position2;
-                const payload = [1, x, y];
-                console.log("💥 Collision balle payload :", payload);
-                socketToRNBO("ball", payload);
-                break;
-            }
-
+            /*
+                        case "ball_collide": {
+                            const { x, y } = event_datas.position2;
+                            const payload = [1, x, y];
+                            console.log("💥 Collision balle payload :", payload);
+                            socketToRNBO("ball", payload);
+                            break;
+                        }
+            */
             case "ball_bounce": {
                 const { position, velocity, with: collidedWith } = event_datas;
 
@@ -97,12 +97,12 @@ export function initSocket() {
                     .split(",")
                     .map(v => parseFloat(v.trim()));
 
-                if (collidedWith === "wall") {
+                if (["wall", "back_wall"].includes(collidedWith)) {
                     console.log("➡️ Collision avec mur :", [1, ...coords, velocity]);
                     socketToRNBO("wall", [1, ...coords, velocity]);
 
-                } else if (collidedWith === "poteau") {
-                    console.log("➡️ Collision avec poteau");
+                } else if (collidedWith === "poteaux") {
+                    console.log("➡️ Collision avec poteaux");
                     socketToRNBO("rebond_poteau", [...coords, velocity]);
 
                 } else if (/^\d{4}$/.test(collidedWith)) {

@@ -1,41 +1,5 @@
 [
     {
-        "id": "ball00",
-        "file": "media/pingpong_pitch_01.wav"
-    },
-    {
-        "id": "ball01",
-        "file": "media/pingpong_pitch_02.wav"
-    },
-    {
-        "id": "ball02",
-        "file": "media/pingpong_pitch_03.wav"
-    },
-    {
-        "id": "ball03",
-        "file": "media/pingpong_pitch_04.wav"
-    },
-    {
-        "id": "ball04",
-        "file": "media/pingpong_pitch_05.wav"
-    },
-    {
-        "id": "ball05",
-        "file": "media/pingpong_pitch_06.wav"
-    },
-    {
-        "id": "ball06",
-        "file": "media/pingpong_pitch_07.wav"
-    },
-    {
-        "id": "ball07",
-        "file": "media/pingpong_pitch_08.wav"
-    },
-    {
-        "id": "ball08",
-        "file": "media/pingpong_pitch_09.wav"
-    },
-    {
         "id": "joueur",
         "file": "media/pingpong_006.wav"
     },
