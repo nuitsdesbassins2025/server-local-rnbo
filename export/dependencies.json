@@ -66,5 +66,9 @@
     {
         "id": "tap03",
         "file": "media/toc03.wav"
+    },
+    {
+        "id": "drone",
+        "file": "media/drone1.wav"
     }
 ]
