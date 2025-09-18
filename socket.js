@@ -77,7 +77,7 @@ export function initSocket() {
                 const payload = [1, but_position, but_score];
                 console.log("⚽ But payload :", payload);
 
-                socketToRNBO("but", payload);
+                socketToRNBO("goal", payload);
                 break;
             }
             /*
@@ -119,10 +119,11 @@ export function initSocket() {
 
                 break;
             }
-
-            default:
-                console.warn("⚠️ Événement inconnu :", event_type, event_datas);
-                break;
+            /*
+                        default:
+                            console.warn("⚠️ Événement inconnu :", event_type, event_datas);
+                            break;
+                        */
         }
     });
 

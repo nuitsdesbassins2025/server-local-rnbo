@@ -56,15 +56,15 @@
         "file": "media/DOPAMINE_STEM_10.wav"
     },
     {
-        "id": "poteaux_01",
-        "file": "media/POTEAUX_01.wav"
+        "id": "tap01",
+        "file": "media/toc01.wav"
     },
     {
-        "id": "poteaux_02",
-        "file": "media/POTEAUX_02.wav"
+        "id": "tap02",
+        "file": "media/toc02.wav"
     },
     {
-        "id": "poteaux_03",
-        "file": "media/POTEAUX_03.wav"
+        "id": "tap03",
+        "file": "media/toc03.wav"
     }
 ]
