@@ -12,8 +12,8 @@
         "file": "media/bip1.wav"
     },
     {
-        "id": "but",
-        "file": "media/buzzer_bugerror1.wav"
+        "id": "goal",
+        "file": "media/DOPAMINE_GOAL_1.wav"
     },
     {
         "id": "dop_01",
@@ -30,5 +30,41 @@
     {
         "id": "dop_04",
         "file": "media/DOPAMINE_STEM_04.wav"
+    },
+    {
+        "id": "dop_05",
+        "file": "media/DOPAMINE_STEM_05.wav"
+    },
+    {
+        "id": "dop_06",
+        "file": "media/DOPAMINE_STEM_06.wav"
+    },
+    {
+        "id": "dop_07",
+        "file": "media/DOPAMINE_STEM_07.wav"
+    },
+    {
+        "id": "dop_08",
+        "file": "media/DOPAMINE_STEM_08.wav"
+    },
+    {
+        "id": "dop_09",
+        "file": "media/DOPAMINE_STEM_09.wav"
+    },
+    {
+        "id": "dop_10",
+        "file": "media/DOPAMINE_STEM_10.wav"
+    },
+    {
+        "id": "poteaux_01",
+        "file": "media/POTEAUX_01.wav"
+    },
+    {
+        "id": "poteaux_02",
+        "file": "media/POTEAUX_02.wav"
+    },
+    {
+        "id": "poteaux_03",
+        "file": "media/POTEAUX_03.wav"
     }
 ]

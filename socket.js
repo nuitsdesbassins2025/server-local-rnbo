@@ -103,7 +103,7 @@ export function initSocket() {
 
                 } else if (collidedWith === "poteaux") {
                     console.log("➡️ Collision avec poteaux");
-                    socketToRNBO("rebond_poteau", [...coords, velocity]);
+                    socketToRNBO("poteaux", [1, ...coords, velocity]);
 
                 } else if (/^\d{4}$/.test(collidedWith)) {
                     console.log("➡️ Collision avec joueur/ID :", [1, ...coords, velocity, Number(collidedWith)]);
