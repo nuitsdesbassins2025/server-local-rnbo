@@ -59,10 +59,11 @@ export function initSocket() {
             y = 0;
         }
 
-        const payload = [1, clientNumber, colorCode, toolCode, x, y];
-        console.log("🎨 Payload généré :", payload);
+        const payload = [colorCode, toolCode, x, y];
+        console.log(`🎨 Payload joueur ${clientNumber} :`, payload);
 
-        socketToRNBO(action, payload);
+        const inportName = `player${clientNumber}`;
+        socketToRNBO(inportName, payload);
     });
 
     // --- Dodgeball Game ---
