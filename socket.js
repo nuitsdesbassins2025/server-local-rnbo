@@ -71,6 +71,12 @@ export function initSocket() {
         const { event_type, event_datas } = data;
 
         switch (event_type) {
+
+            case "lost_control_endgame": {
+                console.log("ENDGAME");
+                socketToRNBO("endgame", 1);
+                break;
+            }
             case "but": {
                 console.log("⚽ But reçu :", event_datas);
 
@@ -81,15 +87,22 @@ export function initSocket() {
                 socketToRNBO("goal", payload);
                 break;
             }
-            /*
-                        case "ball_collide": {
-                            const { x, y } = event_datas.position2;
-                            const payload = [1, x, y];
-                            console.log("💥 Collision balle payload :", payload);
-                            socketToRNBO("ball", payload);
-                            break;
-                        }
-            */
+
+            case "black_grow": {
+                const payload = [1, event_datas.objects_absorbed];
+                console.log("BLACK HOLE GROW +1")
+                socketToRNBO("blackgrow", payload);
+                break;
+            }
+
+            case "ball_collide": {
+                const { x, y } = event_datas.position2;
+                const payload = [1, x, y];
+                console.log("💥 Collision balle payload :", payload);
+                socketToRNBO("ball", payload);
+                break;
+            }
+
             case "ball_bounce": {
                 const { position, velocity, with: collidedWith } = event_datas;
 

@@ -70,5 +70,41 @@
     {
         "id": "drone",
         "file": "media/drone1.wav"
+    },
+    {
+        "id": "pp01",
+        "file": "media/pingpong_pitch_01.wav"
+    },
+    {
+        "id": "pp02",
+        "file": "media/pingpong_pitch_02.wav"
+    },
+    {
+        "id": "pp03",
+        "file": "media/pingpong_pitch_03.wav"
+    },
+    {
+        "id": "pp04",
+        "file": "media/pingpong_pitch_04.wav"
+    },
+    {
+        "id": "pp05",
+        "file": "media/pingpong_pitch_05.wav"
+    },
+    {
+        "id": "pp06",
+        "file": "media/pingpong_pitch_06.wav"
+    },
+    {
+        "id": "pp07",
+        "file": "media/pingpong_pitch_07.wav"
+    },
+    {
+        "id": "pp08",
+        "file": "media/pingpong_pitch_08.wav"
+    },
+    {
+        "id": "pp09",
+        "file": "media/pingpong_pitch_09.wav"
     }
 ]
