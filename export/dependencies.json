@@ -1,9 +1,5 @@
 [
     {
-        "id": "joueur",
-        "file": "media/pingpong_006.wav"
-    },
-    {
         "id": "bouclierHit",
         "file": "media/pingpong_004.wav"
     },
