@@ -59,10 +59,10 @@ export function initSocket() {
             y = 0;
         }
 
-        const payload = [colorCode, toolCode, x, y];
+        const payload = [1, clientNumber, colorCode, toolCode, x, y];
         console.log(`🎨 Payload joueur ${clientNumber} :`, payload);
 
-        const inportName = `player${clientNumber}`;
+        const inportName = "dessin_touch";
         socketToRNBO(inportName, payload);
     });
 
