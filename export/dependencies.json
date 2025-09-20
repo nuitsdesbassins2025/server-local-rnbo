@@ -1,7 +1,7 @@
 [
     {
-        "id": "joueur",
-        "file": "media/pingpong_006.wav"
+        "id": "joujou",
+        "file": "media/pingpong_darkLFO_001.wav"
     },
     {
         "id": "bouclierHit",
@@ -9,7 +9,7 @@
     },
     {
         "id": "wall",
-        "file": "media/bip1.wav"
+        "file": "media/pingpong_darkLFO_001.wav"
     },
     {
         "id": "goal",
