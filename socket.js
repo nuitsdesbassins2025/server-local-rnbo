@@ -20,7 +20,7 @@ export function initSocket() {
         "#00FF00": 2, // vert
         "#0000FF": 3, // bleu
         "#FFFF00": 4, // jaune
-        "#FF00FF": 5, // magenta
+        //"#FF00FF": 5, // magenta
         "#00FFFF": 6, // cyan
         "#FF8000": 7, // orange
         "#8000FF": 8, // violet
