@@ -91,15 +91,21 @@ export function initSocket() {
             case "black_grow": {
                 const payload = [1, event_datas.objects_absorbed];
                 console.log("BLACK HOLE GROW +1")
-                socketToRNBO("blackgrow", payload);
+                socketToRNBO("blackgrow", 1);
                 break;
             }
 
             case "ball_collide": {
-                const { x, y } = event_datas.position2;
-                const payload = [1, x, y];
-                console.log("💥 Collision balle payload :", payload);
-                socketToRNBO("ball", payload);
+                const { ball1, collide_with, impact_force, position1, velocity1 } = event_datas;
+
+                // Récupère la position globale (objet déjà {x, y})
+                const coords = [position1.x, position1.y];
+
+                console.log("💥 Collision balle payload :", event_datas);
+
+                // Envoie les infos utiles à RNBO
+                socketToRNBO("ball", 1, ...coords, velocity1, impact_force);
+
                 break;
             }
 
